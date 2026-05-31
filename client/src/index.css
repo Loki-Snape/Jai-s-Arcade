@@ -131,6 +131,107 @@ input {
     0 0 54px rgba(236, 72, 153, 0.22);
 }
 
+.sweeper-cabinet-page {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 72px 24px 40px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.16), transparent 28%),
+    radial-gradient(circle at top right, rgba(168, 85, 247, 0.14), transparent 22%),
+    radial-gradient(circle at bottom, rgba(251, 113, 133, 0.18), transparent 30%),
+    linear-gradient(180deg, #040816 0%, #090f1f 52%, #03050d 100%);
+}
+
+.sweeper-cabinet-shell {
+  width: min(1040px, calc(100vw - 48px));
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.sweeper-scoreboard {
+  width: min(920px, calc(100vw - 64px));
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 18px;
+  border: 6px solid #27303d;
+  border-radius: 18px 18px 12px 12px;
+  background: linear-gradient(180deg, #05070d 0%, #020308 100%);
+  color: #67f6ff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.58rem, 1vw, 0.82rem);
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-align: center;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.08) inset,
+    0 0 24px rgba(34, 211, 238, 0.42),
+    0 0 42px rgba(168, 85, 247, 0.2);
+}
+
+.sweeper-bezel {
+  width: min(980px, calc(100vw - 48px));
+  padding: 22px;
+  border: 18px solid #21242d;
+  border-radius: 36px;
+  background: linear-gradient(180deg, #494b56 0%, #1b1d25 100%);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.05) inset,
+    0 0 0 6px rgba(6, 10, 18, 0.92),
+    0 0 28px rgba(34, 211, 238, 0.38),
+    0 0 58px rgba(168, 85, 247, 0.2);
+}
+
+.sweeper-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 20 / 15;
+  border-radius: 18px;
+  background: #02040a;
+}
+
+.return-arcade-button {
+  position: fixed;
+  top: 22px;
+  left: 22px;
+  z-index: 1000;
+  padding: 12px 18px;
+  border: 1px solid rgba(103, 246, 255, 0.6);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(8, 15, 27, 0.94), rgba(3, 7, 14, 0.98));
+  color: #67f6ff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px rgba(103, 246, 255, 0.15) inset,
+    0 0 18px rgba(103, 246, 255, 0.36),
+    0 0 36px rgba(168, 85, 247, 0.16);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.return-arcade-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(103, 246, 255, 0.9);
+  color: #c7fcff;
+  box-shadow:
+    0 0 0 1px rgba(103, 246, 255, 0.22) inset,
+    0 0 24px rgba(103, 246, 255, 0.5),
+    0 0 44px rgba(168, 85, 247, 0.26);
+}
+
+.return-arcade-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .return-lobby-button {
   position: fixed;
   top: 24px;
