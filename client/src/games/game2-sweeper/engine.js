@@ -1,4 +1,5 @@
 import { findGame } from '../../data/games';
+import { playManagedAudio, stopAllManagedAudio } from '../../utils/audioManager.js';
 
 export const game = findGame('game2-sweeper');
 
@@ -461,16 +462,15 @@ export function createEngine(canvas, maybeGameOrCallback, maybeOnStateUpdate) {
     window.addEventListener('keydown', handleKeyDown, true);
 
     try {
+      stopAllManagedAudio();
       await loadAllAssets();
       if (audio.bgm) {
-        audio.bgm.loop = true;
-        audio.bgm.volume = 0.45;
         try {
-          await playAudio(audio.bgm);
+          await playManagedAudio(audio.bgm, { loop: true, volume: 0.45 });
         } catch (err) {
           console.warn('Autoplay blocked, waiting for user gesture to start BGM');
           const startBgmOnGesture = () => {
-            playAudio(audio.bgm).catch(() => {});
+            playManagedAudio(audio.bgm, { loop: true, volume: 0.45 }).catch(() => {});
             window.removeEventListener('pointerdown', startBgmOnGesture);
             window.removeEventListener('keydown', startBgmOnGesture);
           };
@@ -493,6 +493,7 @@ export function createEngine(canvas, maybeGameOrCallback, maybeOnStateUpdate) {
     window.clearInterval(entityTimerId);
     window.removeEventListener('resize', resizeCanvas);
     window.removeEventListener('keydown', handleKeyDown, true);
+    stopAllManagedAudio();
 
     if (audio.bgm) {
       audio.bgm.pause();

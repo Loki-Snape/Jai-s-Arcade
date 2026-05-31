@@ -1,4 +1,5 @@
 import { findGame } from '../../data/games';
+import { playManagedAudio, stopAllManagedAudio } from '../../utils/audioManager.js';
 
 export const game = findGame('game1-felix');
 
@@ -36,7 +37,11 @@ const ASSET_PATHS = {
   fixedWindow: '/assets/game01_felix/sprites/Fixed_Window.png',
   ralph: '/assets/game01_felix/sprites/ralph_sheet.png',
   felix: '/assets/game01_felix/sprites/felix_sheet.png',
-  medals: '/assets/game01_felix/sprites/ui_medals.png'
+  medals: '/assets/game01_felix/sprites/ui_medals.png',
+  bgm: '/assets/game01_felix/audio/bgm.mp3',
+  fix: '/assets/game01_felix/audio/fix.wav',
+  smash: '/assets/game01_felix/audio/smash.wav',
+  jump: '/assets/game01_felix/audio/jump.wav'
 };
 
 function clamp(value, min, max) {
@@ -52,6 +57,35 @@ function loadImage(src) {
 
   image.src = src;
   return { image, promise };
+}
+
+function loadAudio(src) {
+  const audio = new Audio();
+  const promise = new Promise((resolve, reject) => {
+    const cleanup = () => {
+      audio.removeEventListener('canplaythrough', onReady);
+      audio.removeEventListener('loadeddata', onReady);
+      audio.removeEventListener('error', onError);
+    };
+
+    const onReady = () => {
+      cleanup();
+      resolve(audio);
+    };
+
+    const onError = () => {
+      cleanup();
+      reject(new Error(`Failed to load audio: ${src}`));
+    };
+
+    audio.addEventListener('canplaythrough', onReady, { once: true });
+    audio.addEventListener('loadeddata', onReady, { once: true });
+    audio.addEventListener('error', onError, { once: true });
+    audio.src = src;
+    audio.load();
+  });
+
+  return { audio, promise };
 }
 
 function createWindowGrid(initialState = WINDOW_STATES.broken) {
@@ -205,7 +239,11 @@ export function startFelixGame(canvas, onGameOver = () => {}, onStateUpdate = ()
     fixedWindow: loadImage(ASSET_PATHS.fixedWindow),
     ralph: loadImage(ASSET_PATHS.ralph),
     felix: loadImage(ASSET_PATHS.felix),
-    medals: loadImage(ASSET_PATHS.medals)
+    medals: loadImage(ASSET_PATHS.medals),
+    bgm: loadAudio(ASSET_PATHS.bgm),
+    fix: loadAudio(ASSET_PATHS.fix),
+    smash: loadAudio(ASSET_PATHS.smash),
+    jump: loadAudio(ASSET_PATHS.jump)
   };
 
   const assetPromises = Object.values(assetEntries).map((entry) => entry.promise);
@@ -216,7 +254,11 @@ export function startFelixGame(canvas, onGameOver = () => {}, onStateUpdate = ()
     fixedWindow: null,
     ralph: null,
     felix: null,
-    medals: null
+    medals: null,
+    bgm: null,
+    fix: null,
+    smash: null,
+    jump: null
   };
 
   const state = {
@@ -517,14 +559,22 @@ export function startFelixGame(canvas, onGameOver = () => {}, onStateUpdate = ()
     }
 
     if (event.key === 'ArrowUp') {
-      state.playerGridY = clamp(state.playerGridY - 1, 0, GRID_ROWS - 1);
+      const nextGridY = clamp(state.playerGridY - 1, 0, GRID_ROWS - 1);
+      if (nextGridY !== state.playerGridY) {
+        state.playerGridY = nextGridY;
+        playManagedAudio(assets.jump, { volume: 0.05 }).catch(() => {});
+      }
       emitStateUpdate();
       event.preventDefault();
       return;
     }
 
     if (event.key === 'ArrowDown') {
-      state.playerGridY = clamp(state.playerGridY + 1, 0, GRID_ROWS - 1);
+      const nextGridY = clamp(state.playerGridY + 1, 0, GRID_ROWS - 1);
+      if (nextGridY !== state.playerGridY) {
+        state.playerGridY = nextGridY;
+        playManagedAudio(assets.jump, { volume: 0.05 }).catch(() => {});
+      }
       emitStateUpdate();
       event.preventDefault();
       return;
@@ -538,6 +588,11 @@ export function startFelixGame(canvas, onGameOver = () => {}, onStateUpdate = ()
       if (cell && cell.state === oppositeState) {
         cell.state = goalState;
         state.score += 100;
+        if (state.gameState === GAME_STATES.FELIX_MODE) {
+          playManagedAudio(assets.fix, { volume: 0.10 }).catch(() => {});
+        } else if (state.gameState === GAME_STATES.RALPH_MODE) {
+          playManagedAudio(assets.smash, { volume: 0.15 }).catch(() => {});
+        }
       }
 
       emitStateUpdate();
@@ -548,8 +603,23 @@ export function startFelixGame(canvas, onGameOver = () => {}, onStateUpdate = ()
   Promise.all(assetPromises)
     .then((loadedAssets) => {
       Object.keys(assetEntries).forEach((key, index) => {
-        assets[key] = loadedAssets[index];
+        const entry = assetEntries[key];
+        assets[key] = entry.image || entry.audio || loadedAssets[index];
       });
+
+      stopAllManagedAudio();
+      if (assets.bgm) {
+        playManagedAudio(assets.bgm, { loop: true, volume: 0.45 }).catch(() => {
+          const startBgmOnGesture = () => {
+            playManagedAudio(assets.bgm, { loop: true, volume: 0.45 }).catch(() => {});
+            window.removeEventListener('pointerdown', startBgmOnGesture);
+            window.removeEventListener('keydown', startBgmOnGesture);
+          };
+
+          window.addEventListener('pointerdown', startBgmOnGesture, { once: true });
+          window.addEventListener('keydown', startBgmOnGesture, { once: true });
+        });
+      }
 
       state.running = true;
       state.gameState = GAME_STATES.MENU;
@@ -568,5 +638,11 @@ export function startFelixGame(canvas, onGameOver = () => {}, onStateUpdate = ()
       window.clearInterval(state.opponentIntervalId);
     }
     document.removeEventListener('keydown', handleKeyDown, true);
+    stopAllManagedAudio();
+
+    if (assets.bgm) {
+      assets.bgm.pause();
+      assets.bgm.currentTime = 0;
+    }
   };
 }
