@@ -75,6 +75,54 @@ input {
   padding: 24px 0 56px;
 }
 
+.lobby-page-shell {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 24px 0 56px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(120, 113, 108, 0.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.12), transparent 24%),
+    radial-gradient(circle at bottom, rgba(15, 23, 42, 0.18), transparent 34%),
+    linear-gradient(180deg, #0f172a 0%, #111827 52%, #030712 100%);
+}
+
+.lobby-music-toggle {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  z-index: 1000;
+  padding: 12px 18px;
+  border: 1px solid rgba(142, 240, 139, 0.55);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(7, 12, 10, 0.96), rgba(2, 5, 4, 0.98));
+  color: #8ef08b;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px rgba(142, 240, 139, 0.14) inset,
+    0 0 18px rgba(34, 197, 94, 0.32),
+    0 0 36px rgba(20, 184, 166, 0.14);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.lobby-music-toggle:hover {
+  transform: translateY(-1px);
+  border-color: rgba(142, 240, 139, 0.9);
+  color: #d4ffd2;
+  box-shadow:
+    0 0 0 1px rgba(142, 240, 139, 0.22) inset,
+    0 0 24px rgba(34, 197, 94, 0.42),
+    0 0 44px rgba(20, 184, 166, 0.18);
+}
+
+.lobby-music-toggle:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .felix-cabinet-page {
   width: 100vw;
   min-height: 100vh;
@@ -230,6 +278,72 @@ input {
 
 .return-arcade-button:active {
   transform: translateY(0) scale(0.98);
+}
+
+.minotaur-cabinet-page {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 72px 24px 40px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(120, 113, 108, 0.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.14), transparent 24%),
+    radial-gradient(circle at bottom, rgba(17, 24, 39, 0.18), transparent 34%),
+    linear-gradient(180deg, #111827 0%, #0f172a 50%, #030712 100%);
+}
+
+.minotaur-cabinet-shell {
+  width: min(1040px, calc(100vw - 48px));
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.minotaur-scoreboard {
+  width: min(920px, calc(100vw - 64px));
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 18px;
+  border: 6px solid #2f3630;
+  border-radius: 18px 18px 12px 12px;
+  background: linear-gradient(180deg, #090d09 0%, #040704 100%);
+  color: #8ef08b;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.58rem, 1vw, 0.82rem);
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-align: center;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.06) inset,
+    0 0 24px rgba(34, 197, 94, 0.46),
+    0 0 48px rgba(20, 184, 166, 0.2);
+}
+
+.minotaur-bezel {
+  width: min(980px, calc(100vw - 48px));
+  padding: 22px;
+  border: 18px solid #343836;
+  border-radius: 36px;
+  background: linear-gradient(180deg, #484d49 0%, #1d221d 100%);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.04) inset,
+    0 0 0 6px rgba(5, 10, 7, 0.94),
+    0 0 28px rgba(34, 197, 94, 0.42),
+    0 0 64px rgba(20, 184, 166, 0.18);
+}
+
+.minotaur-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 20 / 15;
+  border-radius: 18px;
+  background: #020403;
 }
 
 .return-lobby-button {

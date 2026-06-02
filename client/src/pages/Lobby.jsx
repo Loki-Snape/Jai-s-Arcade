@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Navbar from '../components/Navbar';
 import GameCard from '../components/GameCard';
 import axiosClient from '../api/axiosClient';
@@ -7,6 +7,8 @@ export default function Lobby() {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+  const lobbyMusicRef = useRef(new Audio('/assets/lobby/audio/lobby_bgm.wav'));
 
   useEffect(() => {
     let active = true;
@@ -41,8 +43,33 @@ export default function Lobby() {
     };
   }, []);
 
+  useEffect(() => {
+    const lobbyMusic = lobbyMusicRef.current;
+    lobbyMusic.loop = true;
+
+    if (isMusicPlaying) {
+      lobbyMusic.play().catch(() => {});
+    } else {
+      lobbyMusic.pause();
+    }
+
+    return () => {
+      lobbyMusic.pause();
+    };
+  }, [isMusicPlaying]);
+
   return (
-    <main className="page-shell">
+    <main className="lobby-page-shell">
+      <button
+        type="button"
+        className="lobby-music-toggle"
+        onClick={() => setIsMusicPlaying((current) => !current)}
+        aria-pressed={isMusicPlaying}
+        aria-label={isMusicPlaying ? 'Turn lobby music off' : 'Turn lobby music on'}
+      >
+        {isMusicPlaying ? '🎵 Music: ON' : '🔇 Music: OFF'}
+      </button>
+
       <Navbar />
       <header className="lobby-masthead">
         <p className="lobby-kicker">Press start</p>
