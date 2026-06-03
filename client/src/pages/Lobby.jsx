@@ -8,7 +8,7 @@ export default function Lobby() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isMusicPlaying, setIsMusicPlaying] = useState(true);
-  const lobbyMusicRef = useRef(new Audio('/assets/lobby/audio/lobby_bgm.wav'));
+  const audioRef = useRef(new Audio('/assets/lobby/audio/lobby_bgm.wav'));
 
   useEffect(() => {
     let active = true;
@@ -44,19 +44,28 @@ export default function Lobby() {
   }, []);
 
   useEffect(() => {
-    const lobbyMusic = lobbyMusicRef.current;
-    lobbyMusic.loop = true;
+    const audio = audioRef.current;
+    audio.loop = true;
 
-    if (isMusicPlaying) {
-      lobbyMusic.play().catch(() => {});
-    } else {
-      lobbyMusic.pause();
+    if (isMusicPlaying) { 
+      audio.play().catch(() => {}); 
+    } else { 
+      audio.pause(); 
     }
 
     return () => {
-      lobbyMusic.pause();
+      audio.pause(); 
+      audio.currentTime = 0;
     };
   }, [isMusicPlaying]);
+
+  // Ensure music completely stops when navigating away via GameCard
+  const handleGameSelect = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  };
 
   return (
     <main className="lobby-page-shell">
@@ -78,7 +87,7 @@ export default function Lobby() {
       </header>
       {loading && <div className="status-pill lobby-status">Loading arcade roster...</div>}
       {error && !loading && <div className="status-pill lobby-status lobby-status--error">{error}</div>}
-      <section className="game-grid">
+      <section className="game-grid" onClick={handleGameSelect}>
         {games.map((game) => (
           <GameCard key={game.id} game={game} />
         ))}

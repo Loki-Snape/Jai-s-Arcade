@@ -1,6 +1,6 @@
 # Jai's Arcade
 
-Jai's Arcade is a React + Vite arcade frontend backed by an Express + PostgreSQL API. The project is structured around a central lobby that launches a growing roster of canvas games, each with its own engine, asset set, and score/state flow.
+Jai's Arcade is a React + Vite arcade frontend backed by an Express + PostgreSQL API. It is named after my younger brother Jai. The project is structured around a central lobby that launches a growing roster of canvas games, each with its own engine, asset set, and score/state flow.
 
 ## What This Project Includes
 
